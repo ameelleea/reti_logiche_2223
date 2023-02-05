@@ -95,14 +95,15 @@ $f = (a-b) * (a-b)$
 \end{figure}
 
 Dal momento che l'operazione di sottrazione compare due volte all'interno del data flow graph, è possibile utilizzare il resource sharing, usando una unica macro aritmetica per entrambe le differenze.
-Per fare questo sono necessari due cicli di clocK: durante il primo viene svolta la differenza tra i primi due valori, e durante il secondo viene svolta la seconda differenza e il prodotto tra i due
+Per fare questo sono necessari due cicli di clock: durante il primo viene svolta la differenza tra i primi due valori, e durante il secondo viene svolta la seconda differenza e il prodotto tra i due
 risultati. 
-Per svolgere la differenza tra due numeri si è scelto di utilizzare la notifica in complemento a due, il secondo valore andrà dunque convertito nel rispettivo complemento prima di essere passato
-ad un addizionatore.
+Per svolgere la differenza tra due numeri si è scelto di utilizzare la notifica in complemento a due, che permette di svolgere le sottrazioni attraverso la somma. 
+Il secondo valore andrà dunque convertito nel rispettivo complemento prima di essere passato ad un addizionatore.
+\\Per mantenere i valori degli ingressi e delle uscite durante i due cicli di clock, sono necessari dei registri per gli ingressi C e D e per l'uscita di (A-B).
 
 \subsection{Risorse}
     \begin{itemize}
-        \item 3 Registri a 4 bit
+        \item 3 Registri parallelo/parallelo a 4 bit
         \item 2 Multiplexer a 2 ingressi a 4 bit
         \item 1 Demultiplexer a 2 uscite a 4 bit
         \item 1 Complementatore a 4 bit
@@ -118,7 +119,9 @@ Questi due transistor sono formati da tre terminali: \textbf{Source (S)}, \textb
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{transistors}    
+    \includegraphics[width=0.8\textwidth]{transistors}
+    \caption{Schema dei transistor nMOS (sinistra) e pMOS (destra)}
+    \label{ }    
 \end{figure}
 
 \begin{itemize}
@@ -128,15 +131,14 @@ Questi due transistor sono formati da tre terminali: \textbf{Source (S)}, \textb
     forma quella che si chiama rete di \textbf{"pull-up"}.
 
 \subsection{Porte logiche semplici}
-Le porte logiche elementari sono quelle corrispondenti agli operatori logici di base, a partire dai quali è possibile costruire tutti gli altri operatori (e, di conseguenza, le altre
-porte logiche). Queste sono le porte \textbf{NOT}, \textbf{NAND} e \textbf{NOR}. Tutte le porte logiche possono avere un numero arbitratio di ingressi. 
-Tuttavia, in questo progetto si è fatto uso esclusivamente di porte a due ingressi, quindi da qui in avanti le descrizioni e le tabelle della verità faranno riferimento a questo tipo di porte logiche.
+Le porte logiche elementari sono quelle funzionalmente complete, ovvero che permettono di costruire tutte le altre porte logiche. 
+Queste sono le porte \textbf{NOT}, \textbf{NAND} e \textbf{NOR}.
 
 \subsubsection{Porta NOT}
-La porta NOT (o inverter), corrispondente all'omonimo operatore logico, prende il segnale in ingresso e lo restituisce negato. Viene realizzata collegando in serie pull-up e pull-down. Di seguito 
+La porta NOT (o inverter), corrispondente all'omonimo operatore logico, prende il segnale in ingresso e lo restituisce negato. Viene realizzata collegando pull-up e pull-down. Di seguito 
 sono illustrate la tabella della verità e l'implementazione della porta NOT.
 \begin{table}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{ | l | l |}
         \hline
@@ -149,11 +151,11 @@ sono illustrate la tabella della verità e l'implementazione della porta NOT.
     \end{minipage}
     \end{table}
     
-    \begin{figure}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{figure}[H]
+    \begin{minipage}[b]{\textwidth}
     
     \includegraphics[width=70mm]{inverter}
-    \caption{Implementazione inverter}
+    \caption{Inverter}
     \label{ }
     \end{minipage}
     \end{figure}
@@ -161,11 +163,10 @@ sono illustrate la tabella della verità e l'implementazione della porta NOT.
 
 \subsubsection{Porta NAND}
 La porta NAND è una porta logica invertente che restituisce 1 solo se almeno uno dei due ingressi vale 0, e corrisponde alla negazione della congiunzione logica dei due ingressi. 
-Si tratta di una porta logica semplice in quanto è funzionalmente completa, ovvero a partire da essa è possibile implementare tutte le altre porte logiche. 
 Viene realizzata collegando in parallelo due transistor pMOS e in serie due transistor nMOS.
 
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|ll|l|}
     \hline
@@ -180,22 +181,21 @@ Viene realizzata collegando in parallelo due transistor pMOS e in serie due tran
     \end{minipage}
     \end{table}
     
-    \begin{figure}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{figure}[H]
+    \begin{minipage}[b]{\textwidth}
     
     \includegraphics[width=70mm]{nand}
-    \caption{Implementazione NAND}
+    \caption{Porta NAND}
     \label{ }
     \end{minipage}
     \end{figure}
 
 \subsubsection{Porta NOR}
 La porta NOR è una porta logica invertente che restituisce 1 solo se entrambi gli ingressi valgono 0, e corrisponde alla negazione della disgiunzione logica dei due ingressi. 
-Come per il NAND, questa porta è funzionalmente completa. 
 Viene realizzata collegando in parallelo due transistor nMOS e in serie due transistor pMOS.
 
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|ll|l|}
     \hline
@@ -210,11 +210,11 @@ Viene realizzata collegando in parallelo due transistor nMOS e in serie due tran
     \end{minipage}
     \end{table}
     
-    \begin{figure}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{figure}[H]
+    \begin{minipage}[b]{\textwidth}
     
     \includegraphics[width=70mm]{nor}
-    \caption{Implementazione NOR}
+    \caption{Porta NOR}
     \label{ }
     \end{minipage}
     \end{figure}
@@ -223,96 +223,100 @@ Viene realizzata collegando in parallelo due transistor nMOS e in serie due tran
 Le porte logiche composte utilizzate in questo progetto sono le porte AND, OR e EXOR. Ciascuna di queste è realizzata combinando porte NOT, NAND e NOR.
 
 \subsubsection{Porta AND}
-La porta AND è realizzata tramite una porta NAND, la cui uscita viene invertita tramite una porta NOT.
+La porta AND (congiunzione logica) viene implementata tramite una porta NAND, la cui uscita viene invertita tramite una porta NOT.
+\\
+\textbf{(AB)=((AB)')'}
+\\
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|ll|l|}
         \hline
-        \textbf{A} & \textbf{B} & \textbf{((AB)')' = AB} \\ \hline
-        0          & 0          & 0          \\ \hline
-        0          & 1          & 0          \\ 
-        1          & 0          & 0          \\ 
-        1          & 1          & 1          \\ \hline
+        \textbf{A} & \textbf{B} & \textbf{AB} \\ \hline
+        0          & 0          & 0           \\ \hline
+        0          & 1          & 0           \\ 
+        1          & 0          & 0           \\ 
+        1          & 1          & 1           \\ \hline
         \end{tabular}
         \caption{Tabella della verità AND}
         \label{table:student}
     \end{minipage}
     \end{table}
     
-    \begin{figure}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{figure}[H]
+    \begin{minipage}[b]{\textwidth}
     
     \includegraphics[width=70mm]{and}
-    \caption{Implementazione NAND}
+    \caption{Porta AND}
     \label{ }
     \end{minipage}
     \end{figure}
 
 \subsubsection{Porta OR}
 E' possibile realizzare una porta OR, che corrisponde all'omonimo operatore logico, semplicemente invertendo l'uscita di una porta NOR.
+\\
+\textbf{(A+B)=((A+B)')'}
+\\
 
     \begin{table}[H]
-        \begin{minipage}[b]{0.4\textwidth}
+        \begin{minipage}[b]{\textwidth}
         \centering
         \begin{tabular}{|ll|l|}
             \hline
-            \textbf{A} & \textbf{B} & \textbf{((A+B)')' = A + B} \\ \hline
-            0          & 0          & 0          \\ \hline
-            0          & 1          & 1          \\ 
-            1          & 0          & 1          \\ 
-            1          & 1          & 1          \\ \hline
+            \textbf{A} & \textbf{B} & \textbf{A + B} \\ \hline
+            0          & 0          & 0              \\ \hline
+            0          & 1          & 1              \\ 
+            1          & 0          & 1              \\ 
+            1          & 1          & 1              \\ \hline
             \end{tabular}
             \caption{Tabella della verità OR}
             \label{table:student}
         \end{minipage}
         \end{table}
         
-        \begin{figure}[ht]
-        \begin{minipage}[b]{0.4\textwidth}
+        \begin{figure}[H]
+        \begin{minipage}[b]{\textwidth}
         
         \includegraphics[width=70mm]{or}
-        \caption{Implementazione OR}
+        \caption{Porta OR}
         \label{ }
         \end{minipage}
         \end{figure}
 
 \subsubsection{Porta EXOR}
 L'operatore logico EXOR (EXclusive OR) corrisponde all'equazione logica $ab' + a'b$. Una porta logica di questo tipo è dunque realizzabile tramite porte NOT, AND e OR.
-
+Tuttavia, utilizzando le leggi di DeMorgan è possibile realizzare questa porta logica esclusivamente tramite porte NAND e NOT. Infatti:
+\\
+\emph{((A'B)'(AB')')'=A'B+AB'}
+\\
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|ll|l|}
         \hline
         \textbf{A} & \textbf{B} & \textbf{A'B + AB'} \\ \hline
-        0          & 0          & 0          \\ \hline
-        0          & 1          & 1          \\ 
-        1          & 0          & 1          \\
-        1          & 1          & 0          \\ \hline
+        0          & 0          & 0                  \\ \hline
+        0          & 1          & 1                  \\ 
+        1          & 0          & 1                  \\
+        1          & 1          & 0                  \\ \hline
         \end{tabular}
         \caption{Tabella della verità EXOR}
         \label{table:student}
     \end{minipage}
     \end{table}
     
-    \begin{figure}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{figure}[H]
+    \begin{minipage}[b]{\textwidth}
     
     \includegraphics[width=70mm]{exor}
-    \caption{Implementazione EXOR}
+    \caption{Porta EXOR}
     \label{ }
     \end{minipage}
     \end{figure}
-
 \\
-\\
-\textbf{Nota:} le porte AND e OR possono essere realizzate anche implementando le leggi di DeMorgan. Tuttavia, questo tipo di implementazione aumenta leggermente la complessità circuitale, e dunque
-si è deciso di optare per la negazione delle porte invertenti, che permette di usare due porte logiche semplici anzichè tre.
-
 \subsection{Elementi di memoria}
 Gli elementi di memoria sono circuiti sequenziali che possono avere solo due stati (0 e 1) in grado di passare da uno all'altro sulla base di uno o più segnali di ingresso, e di mantenere lo stato
-corrente per un periodo di tempo indefinito.  
+corrente per un periodo di tempo indefinito. Sono dunque elementi in gradi di memorizzare un singolo bit.
 
 \subsubsection{Latch SR}
 Il Latch SR (Set-Reset) è un elemento di memoria asincrono dotato di due segnali di ingresso \textbf{\emph{s}} e \textbf{\emph{r}} e di due porte NOR, ciascuna avente un ingresso collegato a 
@@ -346,21 +350,21 @@ La configurazione \emph{s}=1, \emph{r}=1 non è ammessa.
 \end{table}
 
 Il problema legato a questa rete sequenziale, che è asincrona, è la possibilità che si presentino situazioni transitorie che potrebbero modificare le configurazioni degli ingressi in maniera non desiderata o 
-non prevedibile. Per risolvere questo problema, è utile introdurre un segnale di sincronismo, come mostrato nei paragrafi che seguono.
+non prevedibile.
 
 \subsubsection{Flip-flop SR}
 Nel Flip-flop SR, i due segnali \emph{s} e \emph{r} sono generati da due porte AND, alle quali sono collegati due segnali di ingresso \textbf{\emph{S}} ed \textbf{\emph{R}} 
-e un segnale di sincronismo tipicamente denominato \textbf{clock}, di natura generalmente periodica. 
+e un segnale di sincronismo denominato \textbf{Clock}, di natura generalmente periodica. 
 In questo modo, ci si assicura che l'aggiornamento degli stati avvenga solo in momenti ben definiti.
 \begin{itemize}
-    \item con Clock=1, \emph{S}=1, \emph{R}=0 si ha lo stato di \textbf{set};
-    \item con Clock=1, \emph{S}=0, \emph{R}=1 si ha lo stato di \textbf{reset};
-    \item con Clock=1, \emph{S}=0, \emph{R}=0 si ha lo stato di \textbf{hold};
-    \item con Clock=0, il flip-flop rimane in stato di hold indipendentemente dalla configurazione degli ingressi.
+    \item con Clock=1, \emph{S}=1, \emph{R}=0 si ha lo stato di \textbf{SET};
+    \item con Clock=1, \emph{S}=0, \emph{R}=1 si ha lo stato di \textbf{RESET};
+    \item con Clock=1, \emph{S}=0, \emph{R}=0 si ha lo stato di \textbf{HOLD};
+    \item con Clock=0, il flip-flop rimane in stato di HOLD indipendentemente dalla configurazione degli ingressi.
 \end{itemize}
 
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|lll|ll|l|}
         \hline
@@ -378,23 +382,15 @@ In questo modo, ci si assicura che l'aggiornamento degli stati avvenga solo in m
         \label{tab:my-table}
     \end{minipage}
     \end{table}
-    
-    \begin{figure}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
-    \centering
-    \includegraphics[width=70mm]{nand}
-    \caption{Implementazione NAND}
-    \label{ }
-    \end{minipage}
-    \end{figure}
 
 \subsubsection{Flip-flop D-level sensitive}
 Il funzionamento di un Flip-flop D-level sensitive è analogo a quello del FFSR, ma ai due segnali \emph{S} e \emph{R} viene sostituito un unico segnale \emph{D}: 
 \emph{S} corrisponde a \emph{D}, \emph{R} a \emph{D'}. Questo permette di escludere la configurazione non ammessa \emph{s}=1, \emph{r}=1, 
 e di avere durante il periodo di salita del clock due sole configurazioni possibili, ovvero quelle di SET e di RESET. 
+Il FFDls rimane sensibile alle variazioni degli ingressi per tutta la durata di attività del segnale di clock.
 
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|ll|ll|ll|l|}
         \hline
@@ -409,33 +405,31 @@ e di avere durante il periodo di salita del clock due sole configurazioni possib
     \end{minipage}
     \end{table}
     
-    \begin{figure}[ht]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{figure}[H]
+    \begin{minipage}[b]{\textwidth}
     \centering
-    \includegraphics[width=70mm]{ffdls}
-    \caption{Implementazione FFDls}
+    \includegraphics[width=100mm]{ffdls}
+    \caption{Flip-flop D-level sensitive}
     \label{ }
     \end{minipage}
     \end{figure}
 
 
 \subsubsection{Flip-flop D-edge triggered}
-Il Flip-flop D-edge triggered è un elemento di memoria nel quale l'aggiornamento dello stato è consentito solo sul fronte di salita del clock, a differenza del FFDls che rimane sensibile
-alle variazioni degli ingressi per tutta la durata di attività del segnale di clock. E' costruito tramite due FFDls in serie, denominati \textbf{master} e \textbf{slave}
-Nel \emph{master} il segnale di clock viene negato, e l'uscita \emph{Y} viene inviata in ingresso allo \emph{slave}. 
+Il Flip-flop D-edge triggered è un elemento di memoria nel quale l'aggiornamento dello stato è consentito solo sul fronte di salita del clock. E' costruito tramite due FFDls, 
+denominati \textbf{master} e \textbf{slave}.
+Il \emph{master} prende in ingresso il segnale di clock negato e il bit da memorizzare, \emph{slave} mentre lo slave riceve l'uscita del \emph{master} e il segnale di clock. 
 
 \begin{itemize}
     \item Quando Clock=0, il \emph{master} è abilitato a cambiare stato mentre lo \emph{slave} mantiene le uscite stabili;
     \item Quando Clock=1, lo \emph{slave} rileva le variazioni di stato del \emph{master} e le propaga, mentre il \emph{master} è insensibile alle variazioni degli ingressi.
 \end{itemize}
 
-La tabella della verità è la medesima del FFDls, in quanto questo Flip-flop è realizzato utilizzando due di questi componenti.
-
 \begin{figure}[H]
     \begin{minipage}[b]{\textwidth}
     \centering
-    \includegraphics[width=70mm]{ffdet}
-    \caption{Implementazione FFDet}
+    \includegraphics[width=100mm]{ffdet}
+    \caption{Flip-flop D edge-triggered}
     \label{ }
     \end{minipage}
     \end{figure}
@@ -449,19 +443,19 @@ vettore in ingresso, e le uscite vengono tutte lette contemporaneamente.
     \begin{minipage}[b]{\textwidth}
     \centering
     \includegraphics[width=70mm]{reg4}
-    \caption{Implementazione registro a 4 bit}
+    \caption{Registro parallelo/parallelo a 4 bit}
     \label{ }
     \end{minipage}
     \end{figure}
 
 \subsection{Multiplexer}
-Il Multiplexer (MUX) è un componente dotato di $x$ ingressi a $n$ bit e di una uscita a $n$ bit, in grado di scegliere il valore che assumerà l'uscita tra quelli in ingresso sulla base di uno o più segnali
+Il Multiplexer (MUX) è un componente combinatorio dotato di $x$ ingressi a $n$ bit e di una uscita a $n$ bit, in grado di scegliere il valore che assumerà l'uscita tra quelli in ingresso sulla base di uno o più segnali
 di controllo. Il più semplice multiplexer ha 2 ingressi a 1 bit e una uscita a un bit. Funzione, tabella della verità e implementazione sono illustrati di seguito:
 
 $f(a,b,c) = ac' + bc$
 
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
         \begin{tabular}{|lll|l|}
         \hline
@@ -483,8 +477,8 @@ $f(a,b,c) = ac' + bc$
     \begin{figure}[H]
     \begin{minipage}[b]{\textwidth}
     \centering
-    \includegraphics[width=70mm]{mux1}
-    \caption{Implementazione MUX}
+    \includegraphics[width=100mm]{mux1}
+    \caption{Multiplexer a 1 bit}
     \label{ }
     \end{minipage}
     \end{figure}
@@ -495,8 +489,8 @@ l'$i$-esimo bit del primo o del secondo ingresso a seconda del segnale di contro
 \begin{figure}[H]
     \begin{minipage}[b]{\textwidth}
         \centering
-        \includegraphics[width=70mm]{mux4}
-        \caption{Implementazione MUX a 4 bit}
+        \includegraphics[width=\textwidth]{mux4}
+        \caption{Multiplexer a 4 bit}
         \label{ }
     \end{minipage}
 \end{figure}
@@ -506,11 +500,11 @@ Un Demultiplexer (DEMUX) è un componente che funziona in maniera opposta a un M
 mentre le altre valgono zero. La selezione è operata sulla base di uno o più segnali di controllo.
 Il più semplice DEMUX, illustrato di seguito, è dotato di un ingresso a 1 bit e due uscite a 1 bit.
 \\
-$f_1 = ac'
+$f_1 = ac'\\
 f_2 = ac$
 \\
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
         \begin{tabular}{|ll|ll|}
         \hline
@@ -526,10 +520,10 @@ f_2 = ac$
     \end{table}
     
     \begin{figure}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \includegraphics[width=70mm]{demux1}
-    \caption{Implementazione DEMUX}
+    \caption{Demultiplexer a 1 bit}
     \label{ }
     \end{minipage}
     \end{figure}
@@ -538,9 +532,9 @@ Come per i multiplexer, è possibile implementare un DEMUX con due uscite a $n$ 
 Il DEMUX raffigurato di seguito è dotato di un ingresso e due uscite a 4 bit.
 
 \begin{figure}[H]
-    \begin{minipage}[b]{0.4\textwidth}
-        \includegraphics[width=70mm]{demux4}
-        \caption{Implementazione DEMUX a 4 bit}
+    \begin{minipage}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{demux4}
+        \caption{Demultiplexer a 4 bit}
         \label{ }
     \end{minipage}
 \end{figure}
@@ -549,12 +543,12 @@ Il DEMUX raffigurato di seguito è dotato di un ingresso e due uscite a 4 bit.
 \subsubsection{Half adder}
 Un Half Adder (HA) è una rete combinatoria in grado di calcolare la somma di due bit. E' dotato di due ingressi a un bit (gli addendi) e di due uscite S e Cout che rappresentano Il
 risultato della somma e il riporto in uscita, rispettivamente.
-Le equazioni corrispondenti alle due uscite sono:
-$S = A \oplus Cin$
+Le equazioni corrispondenti alle due uscite sono:\\
+$S = A \oplus Cin$\\
 $Cout = ACin$
 
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|l|l|l|l|}
         \hline
@@ -570,10 +564,10 @@ $Cout = ACin$
     \end{table}
     
     \begin{figure}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \includegraphics[width=70mm]{ha}
-    \caption{Implementazione HA}
+    \caption{Half Adder}
     \label{ }
     \end{minipage}
     \end{figure}
@@ -581,17 +575,17 @@ $Cout = ACin$
 \subsubsection{Full adder}
 Un Full Adder (FA) è una rete combinatoria che calcola la somma di tre bit. E' dotato di tre ingressi A, B e Cin che rappresentano il primo addendo, il seccondo addendo e il riporto
 in ingresso, e di due uscite S e Cout che rappresentano il risultato della somma e il riporto in uscita, rispettivamente. 
-Le equazioni delle due uscite sono:
-$$
-S = Cin \oplus (A \oplus B)
+Le equazioni delle due uscite sono:\\
+$
+S = Cin \oplus (A \oplus B)\\
 cout = AB + Cin(A + B)
-$$
+$\\
 E' possibile implementare questo componente utilizzando due HA in cascata e una porta NOT. Il primo HA calcola la somma dei due addendi, e al risultato viene sommato il riporto in ingresso
 tramite il secondo HA.
 Il riporto in uscita del FA corrisponde alla disgiunzione logica dei riporti in uscita dei due HA.
 
 \begin{table}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \begin{tabular}{|l|l|l|l|l|}
         \hline
@@ -611,98 +605,112 @@ Il riporto in uscita del FA corrisponde alla disgiunzione logica dei riporti in 
     \end{table}
     
     \begin{figure}[H]
-    \begin{minipage}[b]{0.4\textwidth}
+    \begin{minipage}[b]{\textwidth}
     \centering
     \includegraphics[width=70mm]{FA}
-    \caption{Implementazione FA}
+    \caption{Full Adder}
     \label{ }
     \end{minipage}
     \end{figure}
 
 \subsubsection{Complementatore}
-Per trasformare un numero intero nel rispettivo complemento a 2, è sufficiente complementare i singoli bit che lo compongono, e poi sommare 1 al vettore di bit così ottenut0.
-Per realizzare un circuito in grado di calcolare il complemento a due di un numero si è dunque iniziato collegando ciascun bit del valore in ingresso ad un inverter, per poi sommare
-i singoli bit tramite half adder, collegando il riporto in ingresso del primo HA alla differenza di potenziale e il riporto in uscita all'HA successivo.
+Per convertire un numero intero nel rispettivo complemento a 2, è sufficiente complementare i singoli bit che lo compongono, e poi sommare 1 al vettore di bit così ottenuto.
+Per realizzare un circuito in grado di svolgere questa operazione per valori a 4 bit si utilizzando dunque degli inverter, le cui uscite vanno in ingresso a degli HA in cascata.
+Il riporto in ingresso del primo HA viene collegato alla differenza di potenziale.
 
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth}
     \centering    
-    \includegraphics[width=70mm]{complementoadue}
-    \caption{Implementazione Complementatore}
+    \includegraphics[width=\textwidth]{complementoadue}
+    \caption{Complementatore a 4 bit}
     \label{ }
     \end{minipage}
 \end{figure}
 
 
 \subsubsection{RCA a 4bit}
-Un Ripple Carry Adder (RCA) è una macro funzionale per l'addizione di valori a $n$bit. Il suo funzionamento si basa sullo schema classico dell'addizione in colonna: il primo bit
-dell'operando A viene sommato al primo bit dell'operando B, il bit di somma viene aggiunto al vettore di bit dell'uscita mentre il riporto in uscita viene aggiunto alla somma dei due bit successivi.
-Questo schema viene implementato tramite FA in serie, dove il riporto in ingresso corrisponde al riporto in uscita del FA precedente, con l'eccezione del primo FA, il cui riporto in ingresso è
+Un Ripple Carry Adder (RCA) è una macro funzionale per l'addizione di valori a $n$bit. Il suo funzionamento si basa sullo schema classico dell'addizione in colonna:
+
+\begin{table}[H]
+    \begin{minipage}[b]{\textwidth}
+    \centering
+    \begin{tabular}{rrrrrr}
+       & \textbf{c3} & \textbf{c2} & \textbf{c1} & \textbf{c0} &   \\ \hline
+       & x3          & x2          & x1          & x0          & + \\ 
+       & y3          & y2          & y1          & y0          & = \\ \hline
+    c4 & s3          & s2          & s1          & s0          &   \\
+    \end{tabular}
+    \caption{Schema addizione in colonna}
+    \label{tab:my-table}
+    \end{minipage}
+\end{table}
+
+Questo schema viene implementato tramite FA, collegando il riporto in ingresso di ogni FA al riporto in uscita del FA precedente, con l'eccezione del primo FA, il cui riporto in ingresso è
 collegato alla massa.
 
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth} 
     \centering   
-    \includegraphics[width=70mm]{RCA}
-    \caption{Implementazione RCA}
+    \includegraphics[width=\textwidth]{RCA}
+    \caption{Ripple-Carry Adder a 4 bit}
     \label{ }
     \end{minipage}
 \end{figure}
 
-\subsubsection{MAC}
-Un MAC (acronimo di multiply-and-accumulate) è un componente base utilizzato per la realizzazione di moltiplicatori. Questo componente calcola il prodotto tra due bit (corrispondente al prodotto logico)
-e la somma tra i due bit in ingresso. E' dotato di tre ingressi A, B e Cin e di quattro uscite S, Cout, Aout, Bout. Le prime due uscite rappresentano il bit di somma e il riporto in uscita,
-che vengono propagati al MAC sottostante (S) e a quello adiacente (Cout); mentre Aout e Bout propagano i bit in ingresso al MAC successivo lungo la diagonale (Aout) e a quello adiacente (Bout).
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\textwidth]{MAC}
-\end{figure}
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{|cccc|cccc|}
-    \hline
-    \textbf{A} & \textbf{B} & \textbf{Cin} & \textbf{Sin} & \textbf{Sout} & \textbf{Cout} & \textbf{Aout} & \textbf{Bout} \\ \hline
-    0          & 0          & 0            & 0            & 0             & 0             & 0             & 0             \\ 
-    0          & 0          & 0            & 1            & 1             & 0             & 0             & 0             \\ 
-    0          & 0          & 1            & 0            & 1             & 0             & 0             & 0             \\ 
-    0          & 0          & 1            & 1            & 0             & 1             & 0             & 0             \\ 
-    0          & 1          & 0            & 0            & 0             & 0             & 0             & 1             \\ 
-    0          & 1          & 0            & 1            & 1             & 0             & 0             & 1             \\ 
-    0          & 1          & 1            & 0            & 1             & 0             & 0             & 1             \\ 
-    0          & 1          & 1            & 1            & 0             & 1             & 0             & 1             \\ 
-    1          & 0          & 0            & 0            & 0             & 0             & 1             & 0             \\ 
-    1          & 0          & 0            & 1            & 1             & 0             & 1             & 0             \\ 
-    1          & 0          & 1            & 0            & 1             & 0             & 1             & 0             \\ 
-    1          & 0          & 1            & 1            & 0             & 1             & 1             & 0             \\ 
-    1          & 1          & 0            & 0            & 1             & 0             & 1             & 1             \\ 
-    1          & 1          & 0            & 1            & 0             & 1             & 1             & 1             \\ 
-    1          & 1          & 1            & 0            & 0             & 1             & 1             & 1             \\ 
-    1          & 1          & 1            & 1            & 1             & 1             & 1             & 1             \\ \hline
-    \end{tabular}
-    \caption{Tabella della verità MAC}
-    \label{tab:my-table}
-    \end{table}
 
 \subsubsection{Moltiplicatore a 4 bit}
-Il moltiplicatore a 4 bit utilizzato in questo progetto è stato utilizzato collegando i componenti illustrati in precedenza, andando a formare una struttura a matrice.
-La struttura conta quattro file di MAC. In ogni fila, il primo componente è collegato al $i$-esimo bit del secondo operando (B).
-Nella prima fila, ogni MAC é collegato a uno dei bit del primo operando (A), che viene propagato al MAC sulla riga sottostande in direzione diagonale.
-Il bit di somma viene propagato verso il basso, entrando in uno dei MAC sottostanti o nel vettore di bit in uscita, mentre il riporto in uscita si propaga orizzontalmente, analogamente a ciò che accade
-nel ripple-carry adder.
-Questo schema ricalca lo schema della moltiplicazione in colonna, ma anzichè ottenere 4 prodotti parziali, che vanno poi sommati tra loro, l'addizione tra il prodotto di due bit e il prodotto dei due
-bit superiori viene effettuato contestualmente alla moltiplicazione, in modo da produrre immediatamente il bit del prodotto finale.
+Un moltiplicatore è, come suggerisce il nome, un componente combinatorio in grado di effettuare il prodotto di valori a $n$ bit. In questo progetto è stato utilizzato un moltiplicatore a 4 bit.
+Per costruire questo componente, è necessario innanzitutto ricavare la funzione logica del prodotto tra due bit. Osservando la tabella della verità sottostante, risulta evidente che questa corrisponde
+al prodotto logico di due bit, e dunque la funzione logica della moltiplicazione è \textbf{S=AB}.
+
+\begin{table}[H]
+    \begin{minipage}[c]{\textwidth}
+    \centering
+    \begin{tabular}{|ll|l|}
+    \hline
+    \textbf{A} & \textbf{B} & \textbf{S} \\ \hline
+    0          & 0          & 0          \\ 
+    0          & 1          & 0          \\ 
+    1          & 0          & 0          \\ 
+    1          & 1          & 1          \\ \hline
+    \end{tabular}
+    \caption{Tabella della verità moltiplicazione 1 bit}
+    \label{tab:my-table}
+    \end{minipage}
+    \end{table}
+
+Una volta determinata la funzione del prodotto matematico tra due bit, per realizzare un moltiplicatore è sufficiente seguire il classico schema della moltiplicazione in colonna.
+
+\begin{table}[H]
+    \begin{minipage}[c]{\textwidth}
+    \centering
+    \begin{tabular}{rrrrrrrrr}
+       &       &       &       & x3    & x2    & x1    & x0    & * \\ 
+       &       &       &       & y3    & y2    & y1    & y0    & = \\ \hline
+       & 0     & 0     & 0     & y0x3  & y0x2  & y0x1  & y0x0  & + \\ 
+       & 0     & 0     & y1x3  & y1x2  & y1x1  & y1x0  & 0     & + \\ 
+       & 0     & y2x3  & y2x2  & y2x1  & y2x0  & 0     & 0     & + \\ 
+       & y3x3  & y3x2  & y3x1  & y3x0  & 0     & 0     & 0     & + \\ \hline
+    s7 & s6    & s5    & s4    & s3    & s2    & s1    & s0    &   \\ 
+    \end{tabular}
+    \caption{Schema moltiplicazione in colonna}
+    \label{tab:my-table}
+    \end{minipage}
+\end{table}
+
+Seguendo questo schema, è possibile implementare il moltiplicatore utilizzando delle porte AND per svolgere il prodotto dei singoli bit, e poi FA e HA per sommare tra loro i prodotti parziali che si
+trovano lungo la stessa colonna, prestando attenzione a propagare correttamente il riporto in uscita alla colonna successiva. 
 
 \begin{figure}[H]
-    \includegraphics[width=0.8\textwidth]{MUL}
+    \includegraphics[width=\textwidth]{MUL}
     \centering
 \end{figure}
 
 
 \section{Data Path}
 \begin{figure}[H]
-    \includegraphics[width=0.7\textwidth]{datapath}
     \centering
+    \includegraphics[width=0.7\textwidth]{datapath}
 \end{figure}
 
 
@@ -710,8 +718,8 @@ bit superiori viene effettuato contestualmente alla moltiplicazione, in modo da 
 
 \subsection{Specifica}
 Il circuito che si sta progettando necessita di due multiplexer e un demultiplexer, tutti con un singolo segnale di controllo; e di due cicli di clock.
-Durante il primo ciclo di clock, tutti e tre i componenti devono selezionare l'ingresso/uscita di sinistra (segnale 0), mentre nel secondo ciclo di clock viene selezionato l'ingresso/uscita
-di destra (segnale 1).
+Durante il primo ciclo di clock, tutti e tre i componenti devono selezionare l'ingresso/uscita di sinistra (0), mentre nel secondo ciclo di clock viene selezionato l'ingresso/uscita
+di destra (1).
 Dal momento che per tutti e tre i componenti controllati dalla CU il segnale assume lo stesso valore all'interno del medesimo ciclo di clock, è possibile utilizzare un unico segnale
 di controllo (denominato C).
 
@@ -728,36 +736,17 @@ di controllo (denominato C).
     \end{table}
 
 E' possibile implementare questa specifica tramite una macchina a stati finiti che può assumere due stati (Ciclo 0 e Ciclo 1) e produce un unico segnale in uscita. 
-La funzione di uscita dipende unicamente dallo stato presente, mentre la funzione di stato futuro dipende dallo stato presente e dagli ingressi: si tratta dunque di una macchina di Moore.
+La funzione di uscita dipende unicamente dallo stato presente, mentre la funzione di stato futuro dipende dallo stato presente e dagli ingressi.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{statediag}
 \end{figure}
 
-I due stati della macchina di Moore possono essere codificati con un singolo bit S.
-
-\begin{table}[H]
-    \begin{minipage}[c]{\textwidth}
-    \centering
-    \begin{tabular}{|c|c|c|}
-        \hline
-        \textbf{S} & \textbf{C} & \textbf{Sn} \\ \hline
-        0          & 0          & 1           \\ 
-        1          & 1          & 0           \\ \hline
-        \end{tabular}
-        \caption{Codifica degli stati}
-        \label{tab:my-table}
-    \end{minipage}
-    \end{table}
-
-Le funzioni di uscita e stato futuro risultano essere:\\
-\textbf{Sn = S'}\\
-\textbf{C = S}\\
 
 \subsection{Implementazione della macchina di Moore}
-Per poter implementare la control unit tramite macchina di Moore, è necessario introdurre un segnale in ingresso, che imposti lo stato iniziale a 0 e permetta il cambiamento
-di stato. 
+Dal momento che la funzione di uscita dipende unicamente dallo stato presente, è possibile implementare la control unit come una macchina di Moore.
+I due stati della macchina di Moore possono essere codificati con un singolo bit S, e l'ingresso è a sua volta rappresentato da un segnale ad un singolo bit.
 \begin{table}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
@@ -765,8 +754,8 @@ di stato.
         \hline
         \textbf{In} &\textbf{S}  & \textbf{C} & \textbf{Sn} \\ \hline
         0           &0           & 0          & 0           \\
-        0           &1           & 0          & 0           \\
-        1           &0           & 1          & 1           \\ 
+        0           &1           & 1          & 0           \\
+        1           &0           & 0          & 1           \\ 
         1           &1           & 1          & 0           \\ \hline
         \end{tabular}
     \end{minipage}
@@ -780,15 +769,13 @@ Le funzioni di uscita e stato futuro risultano dunque essere:
 \\
 Lo stato presente viene conservato tramite un FFD-edge triggered,
 che viene aggiornato solo sul fronte di salita del clock (che in questo caso è rappresentato da un interrutore manovrato manualmente). 
-L'uscita del FF viene portata ai componenti che necessitano del segnale di controllo e all'interno di un inverter collegato all'ingresso di una porta AND, il cui segnale viene portato
-all'interno del FF. L'altro ingresso della porta AND è collegato a un interruttore, inizialmente impostato su 0, rappresentante il segnale di ingresso. 
 \\
 \\
 \begin{figure}[ht]
     \begin{minipage}[c]{\textwidth}
     \centering
     \includegraphics[width=70mm]{cu}
-    \caption{Implementazione Control Unit}
+    \caption{Control Unit}
     \label{ }
     \end{minipage}
 \end{figure}
@@ -803,8 +790,8 @@ illustrati entrambi i cicli di clock.
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth}
     \centering    
-    \includegraphics[width=100mm]{s1c0}
-    \caption{Simulazione 1: clock 0}
+    \includegraphics[width=\textwidth]{s1c0}
+    \caption{Simulazione 1: ciclo di clock 0}
     \label{ }
     \end{minipage}
 \end{figure}
@@ -812,7 +799,7 @@ illustrati entrambi i cicli di clock.
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
-    \includegraphics[width=100mm]{s1c1}
+    \includegraphics[width=\textwidth]{s1c1}
     \caption{Simulazione 1: ciclo di clock 1}
     \label{ }
     \end{minipage}
@@ -821,7 +808,7 @@ illustrati entrambi i cicli di clock.
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
-    \includegraphics[width=100mm]{s2c0}
+    \includegraphics[width=\textwidth]{s2c0}
     \caption{Simulazione 2: ciclo di clock 0}
     \label{ }
     \end{minipage}
@@ -830,7 +817,7 @@ illustrati entrambi i cicli di clock.
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
-    \includegraphics[width=100mm]{s2c1}
+    \includegraphics[width=\textwidth]{s2c1}
     \caption{Simulazione 2: ciclo di clock 1}
     \label{ }
     \end{minipage}
@@ -839,7 +826,7 @@ illustrati entrambi i cicli di clock.
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
-    \includegraphics[width=100mm]{s3c0}
+    \includegraphics[width=\textwidth]{s3c0}
     \caption{Simulazione 3: ciclo di clock 0}
     \label{ }
     \end{minipage}
@@ -848,43 +835,38 @@ illustrati entrambi i cicli di clock.
 \begin{figure}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
-    \includegraphics[width=100mm]{s3c1}
+    \includegraphics[width=\textwidth]{s3c1}
     \caption{Simulazione 3: ciclo di clock 1}
     \label{ }
     \end{minipage}
 \end{figure}
 
-\subsection{Valutazione di prestazioni e complessità}
+\subsection{Stima di complessità circuitale e prestazioni}
+Per valutare le prestazioni del circuito finale, è necessario introdurre quattro metriche: \emph{complessità circuitale (\textbf{Area}), \textbf{tempo di propagazione} (il tempo necessario per stabilizzare le uscite), 
+\textbf{tempo di contaminazione} (il tempo necessario affinchè si verifichi la prima variazione delle uscite)}, e \emph{\textbf{latenza} (numero di risultati producibili nell'unità di tempo)}.
+E' dunque necessario stimare ciascuna di queste metriche per ognuno dei componenti del circuito partendo dal livello gate, dunque dalle porte logiche (semplici e composte).
+Ognuna di queste metriche viene stimata utilizzando un modello unitario, ovvero ogni porta logica semplice (NOT, NAND e NOR) vale 1.
+Il tempo di propagazione si calcola stimando il percorso più lungo che i segnali in ingresso devono seguire, il tempo di contaminazione stimando quello più breve, mentre l'area corrisponde semplicemente
+al numero di porte logiche semplici utilizzate per realizzare il componente.
 
+\subsubsection{Prestazioni porte logiche}
 \begin{table}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|}
     \hline
-                  & \textbf{NOT} & \textbf{NAND} & \textbf{NOR} & \textbf{AND} & \textbf{OR} & \textbf{EXOR} \\ \hline
-    \textbf{Area} & 1            & 1             & 1            & 2            & 2           & 5             \\ 
-    \textbf{Tp}   & 1            & 1             & 1            & 2            & 2           & 3             \\ 
-    \textbf{Tc}   & 1            & 1             & 1            & 2            & 2           & 2             \\ \hline
+                  & \small{\textbf{NOT}} & \textbf{NAND} & \textbf{NOR} & \textbf{AND}       & \textbf{OR}       & \textbf{EXOR}         \\ \hline
+    \textbf{Area} & 1                    & 1             & 1            & A(NAND)+A(NOT)=2   & A(NOR)+A(NOT)=2   & 2*A(NOT)+3*A(NAND)=5  \\ 
+    \textbf{Tp}   & 1                    & 1             & 1            & Tp(NAND)+Tp(NOT)=2 & Tp(NOR)+Tp(NOT)=2 & Tp(NOT)+2*Tp(NAND)=3  \\ 
+    \textbf{Tc}   & 1                    & 1             & 1            & Tc(NAND)+Tc(NOT)=2 & Tc(NOR)+Tc(NOT)=2 & 2*Tc(NAND)=2          \\ \hline
     \end{tabular}
-    \caption{Area e prestazioni porte logiche}
-    \label{tab:my-table}
 \end{minipage}
 \end{table}
 
-\begin{table}[H]
-    \begin{minipage}[c]{\textwidth}
-    \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|}
-    \hline
-                  & \textbf{Latch SR} & \textbf{FFSR}          & \textbf{FFDls}      & \textbf{FFDet}           & \textbf{Registri} \\ \hline
-    \textbf{Area} & 2*A(NOR)=2        & A(LSR)+2*A(AND)=6      & A(FFSR)+A(NOT)=5    & 2*A(FFDls)+A(NOT)=11     & 4*A(FFDet)=44     \\ 
-    \textbf{Tp}   & 2*Tp(NOR)=2       & Tp(LSR)+2*Tp(AND)=6    & Tp(FFSR)+Tp(NOT)=7  & 2*Tp(FFDls)+Tp(NOT)=15   & 4*Tp(FFDet)=60    \\ 
-    \textbf{Tc}   & Tc(NOR)=1         & Tc(LSR)+Tc(AND)=3      & Tc(FFSR)=3          & 2*Tc(FFDls)=6            & Tc(FFDet)=6       \\ \hline
-    \end{tabular}
-    \caption{Area e prestazioni elementi di memoria}
-    \label{tab:my-table}
-\end{minipage}
-\end{table}
+\subsubsection{Prestazioni multiplexer/demultiplexer}
+L'area di un multiplexer o demultiplexer a $n$ bit è dipendente linearmente dal numero di bit degli ingressi e delle uscite, in quanto serve un MUX per ciascun bit.
+Il tempi di propagazione e contaminazione non sono invece dipendenti dal numero di bit degli ingressi, in quanto i bit delle uscite vengono tutti selezionati in parallelo. Dunque i tempi
+di propagazione e contaminazione sono gli stessi dei multiplexer/demultiplexer a 1 bit.
 
 \begin{table}[H]
     \begin{minipage}[c]{\textwidth}
@@ -892,37 +874,149 @@ illustrati entrambi i cicli di clock.
         \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
                       & \textbf{MUX}               & \textbf{MUX 4 BIT} & \textbf{DEMUX}     & \textbf{DEMUX 4 BIT} \\ \hline
-        \textbf{Area} & 2*A(AND)+A(OR)+A(NOT) = 7  & 4*A(MUX) = 24      & 2*A(AND)+A(INV)=5  & 4*A(DEMUX)=20        \\ 
-        \textbf{Tp}   & Tp(NOT)+Tp(AND)+Tp(OR) = 5 & 4*Tp(MUX) = 20     & Tp(NOT)+Tp(AND)=3  & 4*Tp(DEMUX)=12       \\ 
+        \textbf{Area} & 2*A(AND)+A(OR)+A(NOT) = 7  & 4*A(MUX) = 28      & 2*A(AND)+A(INV)=5  & 4*A(DEMUX)=20        \\ 
+        \textbf{Tp}   & Tp(NOT)+Tp(AND)+Tp(OR) = 5 & Tp(MUX) = 5        & Tp(NOT)+Tp(AND)=3  & Tp(DEMUX)=3          \\ 
         \textbf{Tc}   & Tc(AND)+Tc(OR) = 4         & Tc(MUX) = 4        & Tc(AND)=2          & Tc(DEMUX)=2          \\ \hline
         \end{tabular}
-        \caption{Area e prestazioni componenti di selezione}
-        \label{tab:my-table}
     \end{minipage}
 \end{table}
+
+\subsubsection{Prestazioni registri}
+Gli elementi di memoria che memorizzano un solo bit (latch e flip-flop) non hanno dipendendenza dal numero degli operandi.
+Per i registri parallelo/parallelo, invece, l'area dipende linearmente dal numero di bit da memorizzare.
+I tempi di propagazione e contaminazione non hanno dipendenza dal numero di bit da memorizzare, in quanto scrittura e lettura avvengono in parallelo per ciascun bit, dunque sia Tp che Tc sono pari
+a quelli di un singolo FF D edge triggered.
 
 \begin{table}[H]
     \begin{minipage}[c]{\textwidth}
     \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|}
-    \hline
-                  & \textbf{HA}              & \textbf{FA}      & \textbf{C2}            & \textbf{RCA4}  & \textbf{MAC}      & \textbf{MUL4}  \\ \hline
-    \textbf{Area} & A(AND)+A(EXOR)=7         & 2*A(HA)+A(OR)=9  & 4*A(HA)+4*A(NOT)=32    & 4*A(FA)=45     & A(AND)+A(FA)=11   & 1*A(MAC)=176   \\ 
-    \textbf{Tp}   & Tp(AND)+Tp(EXOR)=5       & Tp(HA)+Tp(OR)=7  & 4*Tp(HA)+4*Tp(NOT)=24  & 4*Tp(FA)=96    & Tp(AND)+Tp(FA)=9  & 16*Tp(MAC)=144 \\ 
-    \textbf{Tc}   & min(Tc(AND),Tc(EXOR))=2  & Tc(HA)=2         & Tc(HA)+Tc(NOT)=3       & Tc(FA)=2       & Tc(AND)=2         & Tc(MAC)=2      \\ 
-    \textbf{Rate} & 1/Tp(HA)                 & 1/Tp(FA)         & 1/Tp(C2)               & 1/Tp(RCA)      & 1/Tp(MAC)         & 1/Tp(MUL)      \\ \hline
-    \end{tabular}
-    \caption{Area e prestazioni macro artimetiche}
-    \label{tab:my-table}
-\end{minipage}
+        \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+                      & \textbf{LatchSR}  & \textbf{FFSR}      & \textbf{FFDls}     & \textbf{FFDet}         & \textbf{Registri 4 bit} \\ \hline
+        \textbf{Area} & 2*A(NOR) = 2      & A(LSR)+2*A(AND)=6  & A(FFSR)+A(INV)=7   & 2*A(FFDls)+A(NOT)=15   & 4*A(FFDet)=60           \\ 
+        \textbf{Tp}   & Tp(NOR) = 2       & Tp(LSR)+Tp(AND)=4  & Tp(NOT)+Tp(FFSR)=5 & 2*Tp(FFDls)+Tp(INV)=11 & Tp(FFDet)=11            \\ 
+        \textbf{Tc}   & Tc(NOR) = 1       & Tc(NOR)+Tc(AND)=3  & Tc(FFSR)=3         & Tc(FFDls)=3            & Tc(FFDet)=3             \\ \hline
+        \end{tabular}
+    \end{minipage}
 \end{table}
 
-\subsection{Stima di complessità circuitale e prestazioni}
-Effettuare la stima per ogni componente combinatorio (tempo di propagazione con modello di ritardo unitario), per ogni stadio 
-(tempo di propagazione) e per l’intero progetto (latenza)
-Determinare la durata minima del periodo di clock a cui può funzionare il circuito
-Dipendenza di prestazioni e complessità dal numero di bit degli operandi
+\subsubsection{Prestazioni macro aritmetiche}
+\begin{itemize}
+\item \textbf{Half Adder e Full Adder:}
+    \begin{itemize}
+        \item Il tempo di propagazione dell'HA corrisponde al tempo di propagazione massimo tra quello della porta AND e della porta EXOR, in quanto le due non sono collegate l'una all'altra
+        ma calcolano i risultati in maniera indipendente. Analogamente, il tempo di contaminazione è quello minore tra i tempi di contaminazione delle due porte.
+        \item Il tempo di propagazione del FA corrisponde al tempo necessario ad attraversare i due HA e la porta OR; mentre il tempo di contaminazione è quello di un singolo HA, in quanto il percorso 
+        più breve è quello tra il riporto in ingresso e l'uscita del bit di somma.
+    \end{itemize}
+    
+    \begin{table}[H]
+        \begin{minipage}[c]{\textwidth}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|}
+        \hline
+                      & \textbf{HA}              & \textbf{FA}       \\ \hline
+        \textbf{Area} & A(AND)+A(EXOR)=7         & 2*A(HA)+A(OR)=16  \\ 
+        \textbf{Tp}   & max(Tp(AND), Tp(EXOR))=3 & 2*Tp(HA)+Tp(OR)=8 \\ 
+        \textbf{Tc}   & min(Tc(AND),Tc(EXOR))=2  & Tc(HA)=2          \\ 
+        \textbf{Rate} & 1/Tp(HA)                 & 1/Tp(FA)          \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \end{table}
 
-TClock > Tp(RCA4) +Tp(C2) + Tp(MUL)
+\item \textbf{Complementatore a 4 bit:}\\
+    L'area del complementatore è quadraticamente dipendente dal numero degli operandi, in quanto per ogni bit degli ingressi sono necessari un HA e una porta NOT:\\
+    A(C2n) = $n$*A(HA) + $n$*A(NOT) = $O(n^2)$.
+    Il percorso più lungo corrisponde al caso in cui il riporto in uscita si propaghi dal primo all'ultimo HA, dunque il tempo di propagazione totale dipende linearmente dal numeri di bit del valore
+    da complementare.
+    Tp(C2n) = Tp(NOT) + $n$*Tp(HA) = $O(n)$.
+    Il percorso più breve è quello che attraversa un singolo invert e un singolo HA.
+    
+    \begin{table}[H]
+        \begin{minipage}[c]{\textwidth}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|}
+        \hline
+                      & \textbf{C2}           \\ \hline
+        \textbf{Area} & 4*A(HA)+4*A(NOT)=32   \\ 
+        \textbf{Tp}   & 4*Tp(HA)+Tp(NOT)=13   \\ 
+        \textbf{Tc}   & Tc(HA)+Tc(NOT)=3      \\ 
+        \textbf{Rate} & 1/Tp(C2)              \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \end{table}
+    
+\item \textbf{RCA4:}\\
+    L'area del RCA, così come il tempo di propagazione, dipendono linearmente dal numero di bit degli operandi, in quanto è necessario un FA per ogni coppia di bit. 
+    Il tempo di contaminazione è invece sempre pari a quello di un FA.
+
+    \begin{table}[H]
+        \begin{minipage}[c]{\textwidth}
+        \centering
+        \begin{tabular}{|c|c|c|c|c|}
+        \hline
+                      & \textbf{RCA4}  \\ \hline
+        \textbf{Area} & 4*A(FA)=64     \\ 
+        \textbf{Tp}   & 4*Tp(FA)=32    \\ 
+        \textbf{Tc}   & Tc(FA)=2       \\ 
+        \textbf{Rate} & 1/Tp(RCA)=0.03 \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \end{table}
+    
+\textbf{Moltiplicatore:}\\
+Il moltiplicatore descritto in precedenza conta in totale 16 porte AND per il calcolo dei prodotti tra singoli bit, 2 HA e 8 FA. L'area corrisponde quindi alla somma delle aree dei componenti elencati.
+Il percorso più lungo che i segnali in ingresso devono percorrere è quello dei due bit in ingresso al primo HA, nel caso in cui ci sia sempre in riporto in uscita da propagare alla colonna successiva,
+e dunque il segnale attraversa tutti i full-adder e half-adder.
+Il percorso più breve è invece quello del prodotto tra i primi due bit di ciascun moltiplicando, che non devono essere sommati ad altri prodotti, e dunque attraversano una sola porta AND.
+
+\begin{table}[H]
+    \begin{minipage}[c]{\textwidth}
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+                  & \textbf{MUL4}                   \\ \hline
+    \textbf{Area} & 16*A(AND)+8*A(FA)+2*A(HA)=174   \\ 
+    \textbf{Tp}   & 2*Tp(AND)+2*Tp(HA)+8*Tp(FA)=74  \\ 
+    \textbf{Tc}   & Tc(AND)=2                       \\ 
+    \textbf{Rate} & >1/Tp(MUL)=0.01                 \\ \hline
+    \end{tabular}
+\end{minipage}
+\end{table}
+\end{itemize}
+
+\subsubsection{Circuito Completo}
+\begin{itemize}
+\item L'area del circuito completo è costituita dalla somma delle aree di tutti i suoi componenti.
+      \textbf{A(TOT)} = 2*A(MUX)+A(C2)+A(DEMUX)+A(RCA4)+A(MUL4)+3*A(REG4) = 526\\
+
+\item Il percorso più lungo all'interno del circuito è quello dei sottraendi, che attraversano tutti i componenti del circuito. 
+      Il tempo di propagazione corrisponde dunque alla sommma dei Tp dei suoi componenti.\\
+      \textbf{Tp(TOT)} = Tp(MUX)+Tp(RCA4)+Tp(DEMUX)+Tp(MUL4)+Tp(C2)+Tp(REG4) = 149\\
+
+\item Il percorso più breve è quello dei minuendi, che non attraversano il complementatore.\\
+      \textbf{Tc(TOT)} = 2*Tc(MUX)+Tc(DEMUX)+Tc(RCA4)+Tc(MUL4)+3*Tc(REG4) = 32\\
+\end{itemize}
+
+Quindi la durata minima che il ciclo di clock può assumere è pari a quella necessaria a completare il secondo ciclo di clock, in quanto durante il primo non viene eseguita la moltiplicazione.
+Il tempo necessario a concludere i calcoli per il secondo ciclo di clock è uguale al tempo di propagazione totale del circuito, più il tempo di propagazione del registro contenente il risultato
+del primo ciclo di clock.\\ 
+
+\textbf{TClock > Tp(TOT) + Tp(REG4) = 160}\\
+
+I tempi di propagazione e contaminazione sono stati stimati sul circuito completo tramite simulazione:
+
+\begin{figure}[ht]
+    \begin{minipage}[c]{\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{onda}
+    \caption{Simulazione dei tempi di propagazione e contaminazione}
+    \label{ }
+    \end{minipage}
+\end{figure}
+
+Osservando l'immagine sopra riportata, e assumendo di far corrispondere il modello unitario precedentemente adottato ad 1ns, è possibile stabilire che i tempi di propagazione e contaminazione corrispondono,
+con ragionevole approssimazione, a quelli stimati.
+
 
 \end{document}
